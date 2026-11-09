@@ -21,7 +21,7 @@ Each non-null release entry uses this structure:
   "sha256": "64-character-lowercase-sha256",
   "chip": "esp32",
   "board": "ESP32-WROOM-32",
-  "inverter_profiles": ["SUN-6K-SG03LP1-EU"],
+  "inverter_profiles": ["deye_6k_sg03"],
   "release_notes": "Short description of the release"
 }
 ```
@@ -30,7 +30,7 @@ Each non-null release entry uses this structure:
 - `firmware_url`: immutable, version-specific binary URL.
 - `sha256`: SHA-256 digest of the exact binary.
 - `chip` and `board`: hardware compatibility constraints.
-- `inverter_profiles`: supported inverter profiles; use an empty array only when the release is intentionally model-independent.
+- `inverter_profiles`: supported inverter profiles. Use the firmware configuration IDs: `deye_6k_sg03`, `deye_30k_sg02hp3`, and `deye_50k_sg01hp3`. An empty array is not accepted by the current ESP32 checker; list each supported profile explicitly.
 - `release_notes`: short human-readable summary.
 
 Device-specific releases must also be compatible with the device's hardware and configured inverter profile. A board ID is a release selector, **not** an authentication secret.
@@ -43,7 +43,7 @@ Device-specific releases must also be compatible with the device's hardware and 
 4. Add the release descriptor to `manifest.json` under `global` or the intended key in `devices`.
 5. Verify the raw manifest and binary URLs, digest, and hardware compatibility before announcing the release.
 
-Do not publish an update until its binary has passed validation. The ESP32 updater must verify the digest before installation and preserve NVS settings.
+Do not publish an update until its binary has passed validation. The ESP32 currently performs manifest discovery and compatibility checks only. It does not install automatically. Before enabling installation, add and verify a cryptographic manifest signature (for example Ed25519 with a public key pinned in firmware), then verify the binary digest and preserve NVS settings.
 
 ## Security
 
